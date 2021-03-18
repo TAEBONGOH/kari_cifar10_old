@@ -1,4 +1,6 @@
+import os
 import argparse
+import torch
 import torchvision
 
 def train(opt):
@@ -9,8 +11,11 @@ def train(opt):
     transforms = torchvision.transforms.ToTensor()
     train_dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True, transform=transforms)
     classes = ('plane','car','bird','cat','deer','dog','frog','horse','ship','truck')
-    pass  # debug breakpoint
-
+    num_workers = min([os.cpu_count(), batch_size])
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True)
+    for i, (imgs, targets) in enumerate(train_dataloader):
+        print('batch idx=%d/%d' % (i, len(train_dataloader)-1))
+        pass # debug
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
